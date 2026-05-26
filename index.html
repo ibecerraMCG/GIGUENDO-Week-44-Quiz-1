@@ -1,0 +1,1339 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 44 Practice Quiz 1</title>
+
+    <style>
+        /* --- CSS Variables & Themes --- */
+        :root {
+            --transition-speed: 0.3s;
+            --font-main: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            
+            /* Default Feedback Colors (Fallback for custom themes) */
+            --feedback-success-bg: #064e3b;
+            --feedback-success-border: #059669;
+            --feedback-success-text: #a7f3d0;
+            --feedback-error-bg: #7f1d1d;
+            --feedback-error-border: #dc2626;
+            --feedback-error-text: #fecaca;
+        }[data-theme="dark"] {
+            --bg-body: #1e293b; --bg-card: #334155; --bg-header: #0f172a;
+            --text-main: #f1f5f9; --text-muted: #94a3b8; --text-accent: #38bdf8;
+            --border-color: #475569; --highlight-bg: #475569;
+            --button-bg: #38bdf8; --button-text: #0f172a; --button-hover: #0ea5e9;
+        }[data-theme="light"] {
+            --bg-body: #f3f4f6; --bg-card: #ffffff; --bg-header: #ffffff;
+            --text-main: #1f2937; --text-muted: #6b7280; --text-accent: #2563eb;
+            --border-color: #e5e7eb; --highlight-bg: #f3f4f6;
+            --button-bg: #2563eb; --button-text: #ffffff; --button-hover: #1d4ed8;
+            --feedback-success-bg: #ecfdf5; --feedback-success-border: #34d399; --feedback-success-text: #065f46;
+            --feedback-error-bg: #fef2f2; --feedback-error-border: #f87171; --feedback-error-text: #991b1b;
+        }[data-theme="midnight"] {
+            --bg-body: #000000; --bg-card: #000000; --bg-header: #000000;
+            --text-main: #e0e0e0; --text-muted: #888888; --text-accent: #90caf9;
+            --border-color: #333333; --highlight-bg: #1a1a1a;
+            --button-bg: #90caf9; --button-text: #000000; --button-hover: #42a5f5;
+            --feedback-success-bg: #051b11; --feedback-success-border: #0f5132; --feedback-success-text: #75b798;
+            --feedback-error-bg: #2c0b0e; --feedback-error-border: #842029; --feedback-error-text: #ea868f;
+        }[data-theme="legacy-dark"] {
+            --bg-body: #2d343e; --bg-card: #3c424f; --bg-header: #3c424f;
+            --text-main: #e8e6e3; --text-muted: #b0c4de; --text-accent: #8ab4f8;
+            --border-color: #555; --highlight-bg: #454c5a;
+            --button-bg: #8ab4f8; --button-text: #202124; --button-hover: #a3c5f9;
+            --feedback-success-bg: #344e41; --feedback-success-border: #52b788; --feedback-success-text: #c7f9cc;
+            --feedback-error-bg: #5e2129; --feedback-error-border: #a4133c; --feedback-error-text: #f8d7da;
+        }[data-theme="sepia"] {
+            --bg-body: #f4ecd8; --bg-card: #fdf6e3; --bg-header: #e4d5b7;
+            --text-main: #433422; --text-muted: #7c6f5a; --text-accent: #a05a2c;
+            --border-color: #d3c4a5; --highlight-bg: #ebe1c9;
+            --button-bg: #a05a2c; --button-text: #fdf6e3; --button-hover: #864822;
+            --feedback-success-bg: #e6f4ea; --feedback-success-border: #8ab893; --feedback-success-text: #2e4c35;
+            --feedback-error-bg: #f9e3e3; --feedback-error-border: #d48f8f; --feedback-error-text: #5c2b2b;
+        }
+
+        [data-theme="contrast"] {
+            --bg-body: #000000; --bg-card: #000000; --bg-header: #000000;
+            --text-main: #ffffff; --text-muted: #dddddd; --text-accent: #ffff00;
+            --border-color: #ffffff; --highlight-bg: #333333;
+            --button-bg: #ffff00; --button-text: #000000; --button-hover: #e6e600;
+            --feedback-success-bg: #000000; --feedback-success-border: #00ff00; --feedback-success-text: #00ff00;
+            --feedback-error-bg: #000000; --feedback-error-border: #ff0000; --feedback-error-text: #ff0000;
+        }
+
+        /* --- Global Reset & Layout --- */
+        * { box-sizing: border-box; }
+        
+        body {
+            font-family: var(--font-main);
+            margin: 0;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            transition: background-color var(--transition-speed), color var(--transition-speed);
+            line-height: 1.6;
+        }
+
+        /* --- Header --- */
+        header {
+            background-color: var(--bg-header);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        header.unpinned { position: relative; box-shadow: none; }
+
+        .header-top {
+            display: flex; justify-content: space-between; align-items: center;
+            width: 100%; flex-wrap: wrap; gap: 15px;
+        }
+
+        header h1 { font-size: 1.5rem; margin: 0; color: var(--text-accent); font-weight: 700; }
+
+        .controls-wrapper { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+
+        /* --- Custom Theme Builder --- */
+        .custom-builder {
+            display: none; flex-wrap: wrap; gap: 15px;
+            background-color: var(--bg-card); padding: 10px 15px;
+            border-radius: 8px; border: 1px solid var(--border-color);
+            margin-top: 5px; font-size: 0.85rem; animation: fadeIn 0.3s;
+            width: 100%; justify-content: flex-end;
+        }
+        .custom-builder.active { display: flex; }
+        .color-picker-group { display: flex; align-items: center; gap: 8px; }
+        .color-picker-group input[type="color"] {
+            border: none; width: 25px; height: 25px; border-radius: 4px;
+            cursor: pointer; padding: 0; background: none;
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- Controls --- */
+        .header-btn {
+            background-color: var(--highlight-bg);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.2s;
+            height: 34px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .header-btn:hover {
+            border-color: var(--text-accent);
+            color: var(--text-accent);
+        }
+
+        .pin-btn {
+            background: none; border: 1px solid var(--border-color); color: var(--text-main);
+            cursor: pointer; padding: 0 10px; border-radius: 6px; font-size: 1rem;
+            transition: background-color 0.2s; height: 34px; display: flex;
+            align-items: center; justify-content: center;
+        }
+        .pin-btn:hover { background-color: var(--highlight-bg); }
+        .pin-btn.pin-active { background-color: rgba(0, 0, 0, 0.1); }
+
+        select#theme-select {
+            padding: 0 12px; border-radius: 6px; border: 1px solid var(--border-color);
+            background-color: var(--bg-card); color: var(--text-main);
+            cursor: pointer; font-family: inherit; height: 34px;
+        }
+
+        /* --- Section Navigation --- */
+        .section-nav { display: flex; gap: 10px; flex-wrap: wrap; }
+        .section-nav button {
+            background-color: var(--highlight-bg); color: var(--text-main);
+            border: 1px solid var(--border-color); padding: 6px 12px;
+            border-radius: 6px; cursor: pointer; font-size: 0.85rem;
+            font-weight: 500; transition: all 0.2s;
+        }
+        .section-nav button:hover { border-color: var(--text-accent); color: var(--text-accent); }
+
+        /* --- Main Content --- */
+        .container {
+            max-width: 850px;
+            margin: 2rem auto;
+            padding: 0 1rem 4rem 1rem;
+        }
+
+        .section-header {
+            margin-top: 3rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--text-accent);
+            color: var(--text-accent);
+            font-size: 1.5rem;
+            font-weight: 700;
+            scroll-margin-top: 150px; /* Offset for sticky header */
+        }
+
+        /* --- Question Card --- */
+        .question-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease;
+        }
+
+        .lo-box {
+            background-color: var(--highlight-bg);
+            border-left: 4px solid var(--text-accent);
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            font-style: italic;
+            display: none; /* Hidden by default */
+        }
+
+        .question-text {
+            font-size: 1.15rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+
+        /* --- Options --- */
+        .options-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .option-label {
+            display: flex;
+            align-items: flex-start;
+            padding: 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .option-label:hover {
+            background-color: var(--highlight-bg);
+            border-color: var(--text-muted);
+        }
+
+        .option-label input {
+            margin-top: 0.3rem;
+            margin-right: 1rem;
+            accent-color: var(--text-accent);
+            transform: scale(1.2);
+        }
+
+        /* --- Buttons --- */
+        .btn-check {
+            margin-top: 1.5rem;
+            background-color: var(--button-bg);
+            color: var(--button-text);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s;
+            font-size: 1rem;
+        }
+
+        .btn-check:hover {
+            opacity: 0.9;
+        }
+
+        .btn-link {
+            display: inline-block;
+            background-color: var(--button-bg);
+            color: var(--button-text);
+            text-decoration: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            font-weight: 600;
+            transition: opacity 0.2s;
+            font-size: 1rem;
+        }
+
+        .btn-link:hover {
+            opacity: 0.9;
+        }
+
+        /* --- Feedback Area --- */
+        .feedback {
+            margin-top: 1.5rem;
+            padding: 1.5rem;
+            border-radius: 8px;
+            display: none; /* Hidden by default */
+            border: 1px solid transparent;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .feedback.correct {
+            background-color: var(--feedback-success-bg);
+            border-color: var(--feedback-success-border);
+            color: var(--feedback-success-text);
+        }
+
+        .feedback.incorrect {
+            background-color: var(--feedback-error-bg);
+            border-color: var(--feedback-error-border);
+            color: var(--feedback-error-text);
+        }
+
+        .feedback-header {
+            font-weight: 800;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .rationale {
+            margin-top: 1rem;
+            font-size: 0.95rem;
+        }
+
+        .source {
+            display: block;
+            margin-top: 1rem;
+            font-size: 0.85rem;
+            opacity: 0.8;
+            font-style: italic;
+            border-top: 1px dashed currentColor;
+            padding-top: 0.5rem;
+        }
+
+        /* --- Mobile Tweaks --- */
+        @media (max-width: 768px) {
+            .header-top { flex-direction: column; align-items: flex-start; }
+            .controls-wrapper { width: 100%; justify-content: flex-start; }
+            .section-nav { justify-content: flex-start; }
+            .custom-builder { justify-content: flex-start; }
+            header h1 { font-size: 1.25rem; }
+            #reveal-all-container { justify-content: flex-start !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <header id="main-header">
+        <div class="header-top">
+            <h1>Week 44 Practice Quiz 1</h1>
+            <div class="controls-wrapper">
+                
+                <!-- Reveal LOs Button -->
+                <button id="reveal-all-btn" class="header-btn" onclick="toggleAllLOs()">Show Learning Objectives</button>
+                
+                <!-- Pin Button -->
+                <button class="pin-btn pin-active" id="pin-btn" onclick="toggleHeader()" title="Pin/Unpin Header">📌</button>
+                
+                <!-- Theme Selector -->
+                <div class="theme-control">
+                    <select id="theme-select" onchange="changeTheme(this.value)">
+                        <option value="dark">Modern Dark</option>
+                        <option value="midnight">Midnight</option>
+                        <option value="light">Modern Light</option>
+                        <option value="legacy-dark">Legacy Dark</option>
+                        <option value="sepia">Sepia</option>
+                        <option value="contrast">High Contrast</option>
+                        <option value="custom">⚙️ Custom...</option>
+                    </select>
+                </div>
+            </div>
+            
+            <!-- Custom Theme Color Pickers -->
+            <div class="custom-builder" id="custom-builder">
+                <div class="color-picker-group">
+                    <label>Background:</label>
+                    <input type="color" id="color-bg" value="#1a1a2e" oninput="updateCustomTheme()">
+                </div>
+                <div class="color-picker-group">
+                    <label>Cards:</label>
+                    <input type="color" id="color-card" value="#16213e" oninput="updateCustomTheme()">
+                </div>
+                <div class="color-picker-group">
+                    <label>Text:</label>
+                    <input type="color" id="color-text" value="#e94560" oninput="updateCustomTheme()">
+                </div>
+                <div class="color-picker-group">
+                    <label>Accent:</label>
+                    <input type="color" id="color-accent" value="#0f3460" oninput="updateCustomTheme()">
+                </div>
+            </div>
+        </div>
+        
+        <!-- Dynamic Navigation Bar -->
+        <div class="section-nav" id="section-nav"></div>
+    </header>
+
+    <div class="container">
+        <div id="quiz-root">
+            <!-- Content injected via JS -->
+        </div>
+    </div>
+
+    <script>
+        // --- Data ---
+        const quizData = [
+            // --- Section 1: Complications of Pregnancy ---
+            {
+                section: "Complications of Pregnancy",
+                fullLO: "LO1: Discuss spontaneous abortion",
+                question: "An 8-week pregnant woman presents to the emergency department complaining of vaginal bleeding and mild uterine cramping. Ultrasound reveals no viable intrauterine pregnancy. The patient's blood type is O negative. To prevent alloimmunization, which of the following is the most appropriate pharmacological intervention?",
+                options: {
+                    A: "Ampicillin",
+                    B: "Betamethasone",
+                    C: "Magnesium sulfate",
+                    D: "Misoprostol",
+                    E: "RhD immune globulin"
+                },
+                correctAnswer: "E",
+                rationale: "RhD-negative and unsensitized patients who experience a spontaneous abortion (early pregnancy loss) are typically treated with RhD immune globulin (RhoGam) to prevent alloimmunization.",
+                source: "Complications of Pregnancy, slide 9: 'RhD-negative and unsensitized patients are typically treated with RhD immune globulin to prevent alloimmunization (RhoGam)'"
+            },
+            {
+                section: "Complications of Pregnancy",
+                fullLO: "LO1: Discuss spontaneous abortion",
+                question: "A 28-year-old woman at 9 weeks gestation is diagnosed with an early pregnancy loss. Her ultrasound shows no cardiac activity, and she prefers medical management over expectant or surgical management. Which of the following medications is most appropriate to induce passage of the uterine contents?",
+                options: {
+                    A: "Indomethacin",
+                    B: "Magnesium sulfate",
+                    C: "Misoprostol",
+                    D: "Nifedipine",
+                    E: "Penicillin G"
+                },
+                correctAnswer: "C",
+                rationale: "Medical management of a spontaneous abortion utilizes misoprostol (often with mifepristone) to induce passage of the uterine contents.",
+                source: "Complications of Pregnancy, slide 7: 'Medical management: Misoprostol to induce passage of the uterine contents (+mifepristone)'"
+            },
+            {
+                section: "Complications of Pregnancy",
+                fullLO: "LO2: Discuss anemia complicating pregnancy",
+                question: "A 26-year-old pregnant woman presents for a routine prenatal visit. A complete blood count reveals a hemoglobin concentration of 11.2 g/dL, which is lower than her pre-pregnancy baseline of 13.5 g/dL. Her mean corpuscular volume (MCV) and serum ferritin are within normal limits. The physician explains that this represents a physiologic (dilutional) anemia. Which of the following physiological processes best explains this patient's hematologic findings?",
+                options: {
+                    A: "Decreased overall red blood cell mass",
+                    B: "Disproportionate expansion of maternal blood volume",
+                    C: "Increased maternal folate requirements",
+                    D: "Increased red blood cell destruction",
+                    E: "Suppression of bone marrow production"
+                },
+                correctAnswer: "B",
+                rationale: "Physiologic anemia of pregnancy is a dilutional anemia. It occurs because the maternal blood volume expands significantly, which dilutes the red blood cells, even though the overall red blood cell mass actually increases during pregnancy.",
+                source: "Complications of Pregnancy, slide 11: 'Physiologic (dilutional) Physiologic changes during pregnancy result in dilutional anemia despite an overall increase in RBC mass... Iron requirements increase dramatically in pregnancy due to expanding maternal blood volume'"
+            },
+            {
+                section: "Complications of Pregnancy",
+                fullLO: "LO2: Discuss anemia complicating pregnancy",
+                question: "A 32-year-old woman at 32 weeks gestation is diagnosed with severe iron-deficiency anemia. She was previously prescribed oral ferrous sulfate but developed intolerable gastrointestinal side effects and stopped taking it. Which of the following is the most appropriate next step in the management of her anemia?",
+                options: {
+                    A: "Administration of intravenous iron",
+                    B: "Expectant management",
+                    C: "Folic acid supplementation",
+                    D: "Red blood cell transfusion",
+                    E: "Switching to a different oral iron formulation"
+                },
+                correctAnswer: "A",
+                rationale: "Intravenous iron is indicated for women who cannot tolerate oral iron, for severe anemia especially in later pregnancy (after 30 weeks gestational age), or when oral iron is not effective.",
+                source: "Complications of Pregnancy, slide 13: 'Intravenous iron: For women who cannot tolerate oral iron... For severe anemia, especially later pregnancy (after 30 wga)'"
+            },
+            {
+                section: "Complications of Pregnancy",
+                fullLO: "LO3: Discuss gestational diabetes",
+                question: "A 30-year-old pregnant woman is diagnosed with gestational diabetes at 26 weeks gestation. The pathogenesis of her condition involves significant insulin resistance mediated by the placenta. Which of the following placental hormones is primarily responsible for inducing this diabetogenic state?",
+                options: {
+                    A: "Estriol",
+                    B: "Human chorionic gonadotropin",
+                    C: "Oxytocin",
+                    D: "Placental lactogen",
+                    E: "Relaxin"
+                },
+                correctAnswer: "D",
+                rationale: "Pregnancy is accompanied by insulin resistance mediated by placental secretion of diabetogenic hormones. These primarily include growth hormone, corticotropin-releasing hormone, placental lactogen (chorionic somatomammotropin), prolactin, and progesterone.",
+                source: "Complications of Pregnancy, slide 14: 'Pregnancy is accompanied by insulin resistance, primarily mediated by placental secretion of diabetogenic hormones including... placental lactogen (chorionic somatomammotropin)'"
+            },
+            {
+                section: "Complications of Pregnancy",
+                fullLO: "LO3: Discuss gestational diabetes",
+                question: "A 28-year-old pregnant woman undergoes universal screening for gestational diabetes at 25 weeks using the two-step approach. She completes a 50-gram one-hour glucose challenge test, and her result is abnormally elevated. Which of the following is the most appropriate next step in her diagnosis?",
+                options: {
+                    A: "75-gram, two-hour oral glucose tolerance test",
+                    B: "100-gram, three-hour oral glucose tolerance test",
+                    C: "Fasting blood glucose measurement",
+                    D: "Hemoglobin A1C measurement",
+                    E: "Initiation of insulin therapy"
+                },
+                correctAnswer: "B",
+                rationale: "In the two-step approach for gestational diabetes diagnosis, screen-positive patients from the 50-gram one-hour challenge test go on to the second step, which is a 100-gram, three-hour oral glucose tolerance test (the diagnostic test).",
+                source: "Complications of Pregnancy, slide 16: 'Two-step approach... Screen-positive patients go on to second step, a 100 gram, three-hour oral glucose tolerance test, which is the diagnostic test'"
+            },
+            {
+                section: "Complications of Pregnancy",
+                fullLO: "LO4: Discuss preterm labor/preterm rupture of membranes",
+                question: "A 25-year-old woman at 31 weeks gestation presents with regular uterine contractions and cervical dilation of 3 cm. She is admitted for preterm labor. To protect the fetus from severe neurodevelopmental complications associated with premature birth, which of the following medications should be administered?",
+                options: {
+                    A: "Azithromycin",
+                    B: "Betamethasone",
+                    C: "Indomethacin",
+                    D: "Magnesium sulfate",
+                    E: "Penicillin G"
+                },
+                correctAnswer: "D",
+                rationale: "In the initial treatment of preterm labor <34 weeks gestation, magnesium sulfate is administered specifically for fetal neuroprotection (if <32 weeks gestation). Betamethasone is given for fetal lung maturity.",
+                source: "Complications of Pregnancy, slide 26: 'Initial treatment <34 weeks gestation... Magnesium sulfate for fetal neuroprotection (<32 weeks gestation)'"
+            },
+            {
+                section: "Complications of Pregnancy",
+                fullLO: "LO4: Discuss preterm labor/preterm rupture of membranes",
+                question: "A 30-year-old pregnant woman at 32 weeks gestation presents with a sudden \"gush\" of clear fluid from her vagina. She denies any uterine contractions. A sterile speculum examination is performed, and the physician swabs the pooling fluid. Testing the fluid with Nitrazine paper reveals a pH of 7.2. This finding is most consistent with which of the following?",
+                options: {
+                    A: "Amniotic fluid",
+                    B: "Bacterial vaginosis",
+                    C: "Candidiasis",
+                    D: "Normal vaginal secretions",
+                    E: "Urine"
+                },
+                correctAnswer: "A",
+                rationale: "The classical presentation of Preterm Prelabor Rupture of Membranes (PPROM) is a sudden gush of clear fluid. Nitrazine paper is used to test the pH; amniotic fluid has a pH range of 7.0 to 7.3, whereas normal vaginal pH is 3.8 to 4.2 and urine is typically <6.0.",
+                source: "Complications of Pregnancy, slide 28: 'Nitrazine paper is used to test the pH of vaginal fluid. Amniotic fluid has a pH range of 7.0 to 7.3, which is different from the normal vaginal pH of 3.8 to 4.2 and often different from the pH of urine, which is typically <6.0'"
+            },
+            {
+                section: "Complications of Pregnancy",
+                fullLO: "LO5: Discuss the hypertensive disorders of pregnancy",
+                question: "A 24-year-old nulliparous woman at 37 weeks gestation is found to have a blood pressure of 145/95 mmHg on two occasions. She has no history of elevated blood pressure prior to 20 weeks. Laboratory studies reveal a normal platelet count, normal liver enzymes, and negative urine protein. She denies headaches or visual changes. Which of the following is the most likely diagnosis?",
+                options: {
+                    A: "Chronic hypertension",
+                    B: "Eclampsia",
+                    C: "Gestational hypertension",
+                    D: "HELLP syndrome",
+                    E: "Preeclampsia without severe features"
+                },
+                correctAnswer: "C",
+                rationale: "Gestational hypertension is clinically diagnosed as the new onset of hypertension (BP ≥140/90 mmHg) at ≥20 weeks gestation in the strictly defined absence of proteinuria or new signs of end-organ dysfunction.",
+                source: "Complications of Pregnancy, slide 34: 'Clinical diagnosis = new onset of hypertension (systolic blood pressure ≥140 mmHg and/or diastolic blood pressure ≥90 mmHg) at ≥20 weeks of gestation in the absence of proteinuria or new signs of end-organ dysfunction'"
+            },
+            {
+                section: "Complications of Pregnancy",
+                fullLO: "LO5: Discuss the hypertensive disorders of pregnancy",
+                question: "A 33-year-old woman at 35 weeks gestation presents with a blood pressure of 165/115 mmHg, a severe persistent headache, and photophobia. Laboratory analysis reveals a protein-to-creatinine ratio of 0.4 mg/mg. Which of the following best categorizes this patient's condition?",
+                options: {
+                    A: "Chronic hypertension with superimposed preeclampsia",
+                    B: "Gestational hypertension",
+                    C: "HELLP syndrome",
+                    D: "Preeclampsia with severe features",
+                    E: "Preeclampsia without severe features"
+                },
+                correctAnswer: "D",
+                rationale: "Preeclampsia is characterized by new-onset hypertension and proteinuria. The presence of \"alarm findings\" such as severe blood pressure elevation (≥160/110 mmHg), severe persistent headache, or visual abnormalities (photophobia) indicates preeclampsia with severe features.",
+                source: "Complications of Pregnancy, slides 39 & 43: 'Alarm findings... develop symptoms at severe end of the disease spectrum: Persistent and/or severe headache, Visual abnormalities (scotomata, photophobia, blurred vision, or temporary blindness)... Systolic blood pressure ≥160 mmHg or diastolic blood pressure ≥110 mmHg'"
+            },
+            {
+                section: "Complications of Pregnancy",
+                fullLO: "LO5: Discuss the hypertensive disorders of pregnancy",
+                question: "A 29-year-old woman with known preeclampsia presents at 34 weeks gestation with right upper quadrant pain. Laboratory studies reveal a hemoglobin of 8.5 g/dL (down from 11.5), AST of 150 U/L (elevated), ALT of 120 U/L (elevated), and a platelet count of 80,000/microL. Which of the following is the most accurate diagnosis?",
+                options: {
+                    A: "Acute fatty liver of pregnancy",
+                    B: "Chronic hypertension",
+                    C: "Eclampsia",
+                    D: "Gestational hypertension",
+                    E: "HELLP syndrome"
+                },
+                correctAnswer: "E",
+                rationale: "HELLP syndrome represents a severe form of preeclampsia where the predominant features are Hemolysis (down-trending hemoglobin), Elevated Liver enzymes (elevated AST/ALT), and Low Platelets (<100,000).",
+                source: "Complications of Pregnancy, slides 40 & 50: 'HELLP syndrome (hemolysis, elevated liver enzymes, low platelets) represents a type of preeclampsia with severe features... Down trending hemoglobin... AST and/or ALT greater than twice the upper limit of normal... Platelets < 100'"
+            },
+            {
+                section: "Complications of Pregnancy",
+                fullLO: "LO6: Given clinical signs and symptoms, physical examination results, and diagnostic test results, determine a diagnosis and outline a treatment plan for each of the complications discussed above",
+                question: "A 38-year-old pregnant woman is diagnosed with gestational diabetes at 26 weeks. Despite rigorous adherence to nutritional counseling and an exercise regimen, her fasting blood glucose concentrations remain consistently >105 mg/dL. Which of the following is the most appropriate next step in her management?",
+                options: {
+                    A: "Early term induction of labor",
+                    B: "Expectant management",
+                    C: "Initiation of insulin therapy",
+                    D: "Intravenous magnesium sulfate",
+                    E: "Strict bed rest"
+                },
+                correctAnswer: "C",
+                rationale: "If normoglycemia cannot be maintained by dietary/lifestyle changes, antihyperglycemic agents should be initiated. Insulin is considered the gold standard pharmacologic therapy.",
+                source: "Complications of Pregnancy, slides 18 & 19: 'If normoglycemia cannot be maintained by dietary/lifestyle changes, then antihyperglycemic agents should be initiated... Pharmacologic therapy: Insulin (gold standard)'"
+            },
+            {
+                section: "Complications of Pregnancy",
+                fullLO: "LO6: Given clinical signs and symptoms, physical examination results, and diagnostic test results, determine a diagnosis and outline a treatment plan for each of the complications discussed above",
+                question: "A 30-year-old woman at 33 weeks gestation presents with epigastric pain and blood pressure of 150/100 mmHg. Lab results demonstrate down-trending hemoglobin, AST of 200 U/L, and platelets of 60,000/microL. A diagnosis of HELLP syndrome is confirmed. Which of the following is the most appropriate definitive management?",
+                options: {
+                    A: "Administration of oral antihypertensives and discharge home",
+                    B: "Delivery at the time of diagnosis",
+                    C: "Expectant management until 37 weeks",
+                    D: "Initiation of misoprostol to prevent hemorrhage",
+                    E: "Observation with twice-weekly nonstress tests"
+                },
+                correctAnswer: "B",
+                rationale: "The patient has HELLP syndrome (Hemolysis, Elevated Liver Enzymes, Low Platelets). Because this is a severe and potentially life-threatening variant of preeclampsia, the recommended management is delivery at the time of diagnosis.",
+                source: "Complications of Pregnancy, slide 50: 'HELLP Syndrome... Diagnostic Criteria: Hemolysis... Elevated Liver Enzymes... Low Platelets... Delivery at time of diagnosis!'"
+            },
+
+            // --- Section 2: Pathology of the Uterus and Ovaries ---
+            {
+                section: "Pathology of the Uterus and Ovaries",
+                fullLO: "LO1: List non-malignant causes of abnormal uterine bleeding",
+                question: "A 28-year-old woman presents with pelvic pain, fever, and abnormal uterine bleeding 5 days after a spontaneous abortion. A clinical diagnosis of acute endometritis is suspected. Which of the following histological findings would most strongly support this specific diagnosis if a biopsy were performed?",
+                options: {
+                    A: "Atypical hyperplasia",
+                    B: "Microabscesses and intraepithelial neutrophils",
+                    C: "Prominent fibrovascular cores",
+                    D: "Sheets of histiocytes with Michaelis-Guttmann bodies",
+                    E: "Xanthogranulomatous inflammation"
+                },
+                correctAnswer: "B",
+                rationale: "Acute endometritis is characterized by acute inflammation with microabscesses, intraepithelial neutrophils, and gland destruction. It is usually a clinical diagnosis seen postpartum or postabortion.",
+                source: "Pathology of the Uterus and Ovaries, slide 7: 'Acute endometritis: • Acute inflammation with microabscesses, intraepithelial neutrophils, and gland destruction • Usually a clinical diagnosis (no biopsy) Often postpartum or postabortion.'"
+            },
+            {
+                section: "Pathology of the Uterus and Ovaries",
+                fullLO: "LO1: List non-malignant causes of abnormal uterine bleeding",
+                question: "A 32-year-old woman with a history of an intrauterine device (IUD) presents for evaluation of infertility and abnormal uterine bleeding. An endometrial biopsy is performed. The diagnosis of chronic endometritis is definitively established by the microscopic presence of which of the following cells in the endometrial stroma?",
+                options: {
+                    A: "Call-Exner bodies",
+                    B: "Eosinophils",
+                    C: "Multinucleated giant cells",
+                    D: "Plasma cells",
+                    E: "Signet ring cells"
+                },
+                correctAnswer: "D",
+                rationale: "Chronic endometritis is histologically defined by the presence of plasma cells in the endometrial stroma. It is associated with risk factors such as IUD use, recent pregnancy, and salpingitis.",
+                source: "Pathology of the Uterus and Ovaries, slide 6: 'Chronic endometritis: • Defined by the presence of plasma cells.'"
+            },
+            {
+                section: "Pathology of the Uterus and Ovaries",
+                fullLO: "LO2: Compare and contrast endometriosis and adenomyosis in terms of: clinical presentation, pathogenesis, morphology, sites involved, and complications",
+                question: "A 35-year-old nulliparous woman complains of severe dysmenorrhea, pelvic pain, and infertility. Laparoscopic examination reveals \"powder burn\" implants on the peritoneum and a large, blood-filled \"chocolate cyst\" on her right ovary. The pathogenesis of this patient's condition is most commonly theorized to occur through which of the following mechanisms?",
+                options: {
+                    A: "Exogenous estrogen administration",
+                    B: "Hematogenous spread from a primary gastric tumor",
+                    C: "Hyperplasia of the myometrium",
+                    D: "Infection by Chlamydia trachomatis",
+                    E: "Retrograde menstruation backward through the fallopian tubes"
+                },
+                correctAnswer: "E",
+                rationale: "The patient has endometriosis (functioning endometrium outside the uterus, forming \"chocolate cysts\" on the ovaries). A primary theory of its pathogenesis is retrograde menstruation, where endometrial tissue flows backwards through the fallopian tubes and implants on pelvic structures.",
+                source: "Pathology of the Uterus and Ovaries, slide 15: 'Endometriosis... Thought to occur through: Retrograde menstruation, backwards through fallopian tubes'"
+            },
+            {
+                section: "Pathology of the Uterus and Ovaries",
+                fullLO: "LO2: Compare and contrast endometriosis and adenomyosis in terms of: clinical presentation, pathogenesis, morphology, sites involved, and complications",
+                question: "A 45-year-old woman presents with heavy abnormal uterine bleeding and pelvic pain before menstruation. Physical examination reveals an enlarged, soft, globular uterus with a thickened uterine wall. She ultimately undergoes a hysterectomy. Microscopic evaluation of the uterine wall demonstrates nonneoplastic endometrial glands and stroma situated deep within the myometrium. Which of the following is the most likely diagnosis?",
+                options: {
+                    A: "Adenomyosis",
+                    B: "Endometrial polyp",
+                    C: "Endometrioid carcinoma",
+                    D: "Endometriosis",
+                    E: "Leiomyoma"
+                },
+                correctAnswer: "A",
+                rationale: "Adenomyosis is a nonneoplastic lesion characterized by the presence of endometrial glands and stroma within the myometrium. It classically presents as an enlarged, soft, globular uterus with heavy bleeding and pain.",
+                source: "Pathology of the Uterus and Ovaries, slide 14: 'Adenomyosis: A nonneoplastic lesion of myometrial tissue characterized by the presence of endometrial glands and stroma within myometrium... Enlarged, soft, globular uterus, with thickened uterine wall, AUB and pelvic pain'"
+            },
+            {
+                section: "Pathology of the Uterus and Ovaries",
+                fullLO: "LO3: Define endometrial hyperplasia and list conditions associated with unopposed estrogen",
+                question: "A 55-year-old postmenopausal woman presents with abnormal uterine bleeding. An endometrial biopsy is performed. The pathologist diagnoses endometrial hyperplasia. Which of the following architectural findings is the defining hallmark of this diagnosis?",
+                options: {
+                    A: "Complete loss of intervening stroma with solid epithelial growth",
+                    B: "Crowded glands with a gland-to-stroma ratio > 2:1",
+                    C: "Simple cystic spaces lined by intestinal-type epithelium",
+                    D: "Straight tubular glands with abundant stroma (ratio < 1:1)",
+                    E: "Widely spaced glands forming \"hairpin\" structures"
+                },
+                correctAnswer: "B",
+                rationale: "Endometrial hyperplasia is defined by an increased proliferation of endometrial glands resulting in crowded glands. The gland-to-stroma ratio must be >2:1 (glands outnumbering stroma).",
+                source: "Pathology of the Uterus and Ovaries, slides 21 & 22: 'Endometrial hyperplasia • Increased proliferation of endometrial glands -> Crowded glands' and 'Gland crowding (Gland : Stroma ratio >2:1)'"
+            },
+            {
+                section: "Pathology of the Uterus and Ovaries",
+                fullLO: "LO3: Define endometrial hyperplasia and list conditions associated with unopposed estrogen",
+                question: "A 60-year-old postmenopausal woman is diagnosed with endometrial hyperplasia following an episode of vaginal bleeding. Her condition is the direct result of prolonged, unopposed estrogen stimulation. Which of the following conditions is an established risk factor for this unopposed estrogenic effect?",
+                options: {
+                    A: "Atrophic endometrium",
+                    B: "Endocervical polyps",
+                    C: "Late menarche",
+                    D: "Multiparous history",
+                    E: "Polycystic ovarian syndrome"
+                },
+                correctAnswer: "E",
+                rationale: "Prolonged unopposed estrogen stimulation leads to endometrial hyperplasia. Risk factors include anovulatory cycles, obesity, nulliparity, early menarche/late menopause, estrogen-secreting tumors, and Polycystic Ovarian Syndrome (PCOS).",
+                source: "Pathology of the Uterus and Ovaries, slide 21: 'Prolonged ESTROGEN stimulation include: • Anovulatory menstrual “cycles” • Obesity • Nulliparity • Early menarche or late menopause • Polycystic ovarian syndrome'"
+            },
+            {
+                section: "Pathology of the Uterus and Ovaries",
+                fullLO: "LO4: Distinguish between endometrioid carcinoma and serous carcinoma of the endometrium based on the following features: age of patient, clinical setting, microscopic morphology, precursor lesions, mutated genes, clinical behavior",
+                question: "A 60-year-old obese woman with a history of endometrial hyperplasia presents with postmenopausal bleeding. A hysterectomy is performed. Pathology reveals an invasive tumor with confluent growth and cribriform patterns of back-to-back glands. Genetic analysis of the tumor reveals a PTEN mutation. This malignancy most likely represents which of the following?",
+                options: {
+                    A: "Clear cell carcinoma",
+                    B: "Endometrioid carcinoma",
+                    C: "Leiomyosarcoma",
+                    D: "Mucinous borderline tumor",
+                    E: "Serous carcinoma"
+                },
+                correctAnswer: "B",
+                rationale: "Endometrioid carcinoma is the most common carcinoma of the endometrium, often arising from a precursor of endometrial hyperplasia in postmenopausal women with high estrogen exposure (like obesity). It is characterized by PTEN mutations and a morphology showing confluent, back-to-back glands.",
+                source: "Pathology of the Uterus and Ovaries, slide 26: 'Endometrioid carcinoma (of the endometrium)... PTEN mutations (arise from endometrial hyperplasia)... Classically, in post-menopausal women and related to increased levels of estrogen exposure... Loss of intervening stroma (confluent growth, cribriform growth...)'"
+            },
+            {
+                section: "Pathology of the Uterus and Ovaries",
+                fullLO: "LO4: Distinguish between endometrioid carcinoma and serous carcinoma of the endometrium based on the following features: age of patient, clinical setting, microscopic morphology, precursor lesions, mutated genes, clinical behavior",
+                question: "A thin, 72-year-old woman presents with vaginal bleeding. Ultrasound shows a thin, atrophic endometrial stripe. Biopsy reveals an aggressive tumor with papillary growth, marked hyperchromasia, and prominent nucleoli. Immunohistochemistry demonstrates diffuse, strong aberrant nuclear staining for p53. Which of the following is the most likely precursor lesion for this malignancy?",
+                options: {
+                    A: "Borderline serous tumor",
+                    B: "Endometrial Intraepithelial Carcinoma (Serous intraepithelial carcinoma)",
+                    C: "Endometrial hyperplasia without atypia",
+                    D: "Endometriosis",
+                    E: "Endometrioid intraepithelial neoplasia (EIN)"
+                },
+                correctAnswer: "B",
+                rationale: "The patient has Serous carcinoma of the endometrium, which classically arises in older women (65-75) in the setting of endometrial atrophy. It is driven by TP53 mutations and has a papillary morphology. Its precursor lesion is endometrial intraepithelial carcinoma (EIC) in the atrophic endometrium.",
+                source: "Pathology of the Uterus and Ovaries, slides 22 & 29: 'Serous carcinoma (of the endometrium)... Clinical associations: arise in endometrial atrophy • Post-menopausal women (65-75 year olds)... Frequent P53 mutations... Microscopic: Papillary growth' and 'Endometrial Hyperplasia -> Carcinoma Pathway... Hyperplasia with atypia/Endometrial Intraepithelial Carcinoma'"
+            },
+            {
+                section: "Pathology of the Uterus and Ovaries",
+                fullLO: "LO5: Compare and contrast leiomyoma and leiomyosarcoma in terms of: epidemiology , gross and microscopic morphology, and prognosis",
+                question: "A 40-year-old African American woman undergoes a hysterectomy for severe, treatment-resistant menorrhagia. The gross specimen demonstrates multiple sharply circumscribed, firm, white masses with a whorled cut surface located within the myometrium. Microscopic examination of these masses is most likely to reveal which of the following?",
+                options: {
+                    A: "Bundles of uniform smooth muscle cells with few mitoses",
+                    B: "Endometrial glands set in a dense fibrous stroma",
+                    C: "High mitotic rate with extensive tumor necrosis",
+                    D: "Sheets of macrophages with foamy cytoplasm",
+                    E: "Trophoblastic proliferation"
+                },
+                correctAnswer: "A",
+                rationale: "The gross description (multiple sharply circumscribed, firm, white, whorled masses) in an African American woman is classic for leiomyomas (fibroids). Microscopically, they are benign smooth muscle neoplasms showing bundles of uniform smooth muscle cells with very few mitoses.",
+                source: "Pathology of the Uterus and Ovaries, slide 34: 'Leiomyoma (aka “fibroids”)... Gross: sharply circumscribed, white, firm, whorled pattern • Microscopy: Bundles of smooth muscle cells, uniform in size and shape, few mitoses'"
+            },
+            {
+                section: "Pathology of the Uterus and Ovaries",
+                fullLO: "LO5: Compare and contrast leiomyoma and leiomyosarcoma in terms of: epidemiology , gross and microscopic morphology, and prognosis",
+                question: "A 55-year-old postmenopausal woman presents with a rapidly enlarging uterine mass and bleeding. A hysterectomy is performed. Gross examination of the uterus reveals a single, bulky, fleshy mass invading the uterine wall with extensive areas of hemorrhage and necrosis. Which of the following microscopic features definitively distinguishes this malignant neoplasm from a benign counterpart?",
+                options: {
+                    A: "Abundant collagenous stroma",
+                    B: "Bland nuclear features with uniform cells",
+                    C: "Endometrial glands scattered within the mass",
+                    D: "High mitotic rate and nuclear atypia",
+                    E: "Presence of metaplastic cartilage"
+                },
+                correctAnswer: "D",
+                rationale: "Leiomyosarcoma is a malignant smooth muscle neoplasm presenting as a bulky, fleshy mass with hemorrhage and necrosis. Microscopically, it is distinguished from benign leiomyomas by prominent nuclear atypia, a high mitotic rate, and tumor necrosis.",
+                source: "Pathology of the Uterus and Ovaries, slide 35: 'Leiomyosarcoma • Malignant smooth muscle neoplasm... Gross: bulky, fleshy mass, invades uterine wall, areas of hemorrhage and necrosis. • Microscopic: nuclear atypia, high mitotic rate, tumor necrosis.'"
+            },
+            {
+                section: "Pathology of the Uterus and Ovaries",
+                fullLO: "LO6: Describe the clinical presentation, associated diseases, and ultrasound findings associated with polycystic ovarian syndrome",
+                question: "A 26-year-old woman presents to her gynecologist complaining of irregular menses, infertility, and excessive facial hair growth. She has a BMI of 34 kg/m². Laboratory testing reveals increased LH and low FSH. If a pelvic ultrasound is performed, which of the following findings is most expected in this patient?",
+                options: {
+                    A: "Bilaterally enlarged ovaries with numerous unruptured cystic follicles",
+                    B: "Normal sized ovaries with a single large, simple cyst",
+                    C: "Normal sized ovaries with bilateral solid, chalky-white masses",
+                    D: "Small, atrophic ovaries lacking follicular development",
+                    E: "Unilateral complex mass with solid and cystic components"
+                },
+                correctAnswer: "A",
+                rationale: "Polycystic Ovarian Syndrome (PCOS) clinically presents with oligomenorrhea/AUB, infertility, obesity, and hirsutism (due to hyperandrogenism). Ultrasound classically shows polycystic ovaries, meaning numerous unruptured cystic follicles that enlarge the ovaries bilaterally.",
+                source: "Pathology of the Uterus and Ovaries, slide 37: 'Polycystic ovarian syndrome (PCOS)... Hyperandrogenism... Hirsutism... Polycystic ovaries (numerous cystic follicles enlarge ovaries bilaterally, unruptured follicles from anovulation).'"
+            },
+            {
+                section: "Pathology of the Uterus and Ovaries",
+                fullLO: "LO6: Describe the clinical presentation, associated diseases, and ultrasound findings associated with polycystic ovarian syndrome",
+                question: "Patients diagnosed with Polycystic Ovarian Syndrome (PCOS) suffer from chronic anovulation, which leads to a constant, unopposed production of estrogen. Because of this specific hormonal imbalance, women with PCOS are at a significantly increased risk of developing which of the following long-term gynecological complications?",
+                options: {
+                    A: "Clear cell carcinoma of the ovary",
+                    B: "Endometrial hyperplasia and malignancy",
+                    C: "Endometrial polyps",
+                    D: "Granulosa cell tumors",
+                    E: "Leiomyosarcoma"
+                },
+                correctAnswer: "B",
+                rationale: "In PCOS, chronic anovulation means there is no progesterone produced to stabilize the endometrium, leading to unopposed estrogen stimulation. This puts the patient at high risk for endometrial hyperplasia and subsequent endometrial carcinoma.",
+                source: "Pathology of the Uterus and Ovaries, slide 37: 'Polycystic ovarian syndrome (PCOS)... Risk for endometrial hyperplasia and malignancy'"
+            },
+            {
+                section: "Pathology of the Uterus and Ovaries",
+                fullLO: "LO7: Compare and contrast the following epithelial ovarian tumors...",
+                question: "A 30-year-old woman undergoes surgery for an incidental, asymptomatic, unilateral 4-cm ovarian mass. Pathology reveals a thin-walled, fluid-filled cyst. Microscopically, the cyst is lined by a single layer of ciliated columnar cells with simple architecture, resembling the epithelium of the fallopian tube. There is no hierarchical branching or atypia. What is the most likely diagnosis?",
+                options: {
+                    A: "Brenner tumor",
+                    B: "Clear cell carcinoma",
+                    C: "Endometrioid carcinoma",
+                    D: "Mucinous cystadenoma",
+                    E: "Serous cystadenoma"
+                },
+                correctAnswer: "E",
+                rationale: "Serous cystadenomas are benign epithelial tumors that are often incidental. They are defined by an epithelium that resembles the fallopian tube (cuboidal to columnar, ciliated, simple architecture, no hierarchical branching).",
+                source: "Pathology of the Uterus and Ovaries, slide 46: 'Serous neoplasm (Fallopian tubal-like) Serous Cystadenoma/Adenofibroma • Benign. • Often incidental and asymptomatic... Epithelium resembles fallopian tube... Cuboidal to columnar cells; Simple architecture... Ciliated'"
+            },
+            {
+                section: "Pathology of the Uterus and Ovaries",
+                fullLO: "LO7: Compare and contrast the following epithelial ovarian tumors...",
+                question: "A 50-year-old woman undergoes resection of a massive, 20-cm multicystic mass of the right ovary. Histologic examination demonstrates cystic spaces lined by a single layer of epithelium containing numerous prominent goblet cells, closely resembling intestinal mucosa. There is minimal atypia and no epithelial tufting. What is the most common molecular mutation associated with this primary ovarian neoplasm?",
+                options: {
+                    A: "BRCA1",
+                    B: "CDH1",
+                    C: "FOXL2",
+                    D: "KRAS",
+                    E: "TP53"
+                },
+                correctAnswer: "D",
+                rationale: "The tumor described is a mucinous cystadenoma (mucinous epithelium like the GI tract with goblet cells). Both benign and malignant mucinous tumors of the ovary frequently harbor KRAS mutations.",
+                source: "Pathology of the Uterus and Ovaries, slide 56: 'Mucinous Tumor (mucinous epithelium like GI tract) Mucinous Cystadenoma/Adenofibroma... Single layer of mucinous epithelium either resembling gastric (foveolar-type) or intestinal (with goblet cells)... Molecular: Frequent KRAS mutations'"
+            },
+            {
+                section: "Pathology of the Uterus and Ovaries",
+                fullLO: "LO7: Compare and contrast the following epithelial ovarian tumors...",
+                question: "A 52-year-old woman with a history of severe endometriosis presents with a solid unilateral ovarian mass. Pathological analysis of the excised mass reveals a malignant neoplasm characterized by back-to-back glands with confluent and cribriform growth patterns, closely mimicking an adenocarcinoma of the uterine cavity. Which of the following is the most likely diagnosis?",
+                options: {
+                    A: "Clear cell carcinoma",
+                    B: "Endometrioid Carcinoma of the ovary",
+                    C: "High-grade serous carcinoma",
+                    D: "Immature teratoma",
+                    E: "Krukenberg tumor"
+                },
+                correctAnswer: "B",
+                rationale: "Endometrioid carcinoma of the ovary is a malignant tumor that resembles endometrial cavity endometrioid adenocarcinoma (confluent growth, back-to-back glands). It is often associated with pre-existing endometriosis.",
+                source: "Pathology of the Uterus and Ovaries, slide 67: 'Endometrioid Carcinoma (of the ovary) • Malignant. • Late middle-age... Often associated with endometriosis. • Resembles endometrial cavity endometrioid adenocarcinoma -> Back-to-back glands with confluent or cribriform growth'"
+            },
+            {
+                section: "Pathology of the Uterus and Ovaries",
+                fullLO: "LO7: Compare and contrast the following epithelial ovarian tumors...",
+                question: "A 60-year-old woman undergoes resection of a high-grade malignant ovarian tumor. The pathologist notes that the tumor consists of cells with abundant clear cytoplasm and prominent \"hobnail\" appearances. A unique finding is the presence of eosinophilic extracellular hyaline globules. Which of the following best describes this tumor?",
+                options: {
+                    A: "Clear cell carcinoma",
+                    B: "Dysgerminoma",
+                    C: "Endometrioid carcinoma",
+                    D: "Mucinous carcinoma",
+                    E: "Yolk sac tumor"
+                },
+                correctAnswer: "A",
+                rationale: "Clear cell carcinoma of the ovary is characterized by cells with clear or eosinophilic cytoplasm, a \"hobnail\" appearance, and the presence of eosinophilic extracellular hyaline globules. It is considered high-grade and has a relatively poor prognosis.",
+                source: "Pathology of the Uterus and Ovaries, slide 31: 'Clear cell carcinoma... tumor cells show cuboidal, polygonal, hobnail, or flat appearances, with clear or eosinophilic cytoplasm • eosinophilic extracellular hyaline globules.'"
+            },
+            {
+                section: "Pathology of the Uterus and Ovaries",
+                fullLO: "LO7: Compare and contrast the following epithelial ovarian tumors...",
+                question: "A 65-year-old woman presents with abdominal distension and ascites. Imaging reveals bilateral solid and cystic exophytic ovarian masses. Biopsy of the masses shows complex solid areas with slit-like spaces, extensive necrosis, and large pleomorphic nuclei with prominent nucleoli. Immunohistochemistry reveals diffuse, aberrant nuclear staining. Almost all cases of this specific carcinoma are driven by mutations in which of the following genes?",
+                options: {
+                    A: "BRAF",
+                    B: "DICER1",
+                    C: "FOXL2",
+                    D: "KRAS",
+                    E: "TP53"
+                },
+                correctAnswer: "E",
+                rationale: "High-grade serous carcinoma of the ovary typically presents in older women (60s) at an advanced stage. It shows solid areas with slit-like spaces, hyperchromatic/pleomorphic nuclei, and prominent nucleoli. Molecularly, it is nearly always driven by TP53 mutations (which causes diffuse aberrant staining or complete loss on IHC).",
+                source: "Pathology of the Uterus and Ovaries, slide 52: 'High-Grade Serous Carcinoma • Usually older women (60s)... Most commonly solid areas with slit-like spaces... Large, hyperchromatic, pleomorphic nuclei. • Often prominent nucleoli. • Molecular: TP53 nearly always'"
+            },
+            {
+                section: "Pathology of the Uterus and Ovaries",
+                fullLO: "LO8: List germ cell tumors which occur in the ovary; Recognize a mature teratoma of the ovary at the gross and microscopic level",
+                question: "A 22-year-old woman undergoes surgical excision of a 7-cm unilateral ovarian cyst. Upon opening the gross specimen in pathology, it is found to contain thick sebaceous material, matted hair, and formed cartilaginous and tooth-like structures. Microscopic examination is most likely to reveal normal, fully differentiated tissues derived from which of the following?",
+                options: {
+                    A: "Ectoderm and mesoderm only",
+                    B: "Ectoderm only",
+                    C: "Endoderm only",
+                    D: "Tissues from 2-3 germ layers",
+                    E: "Trophoblastic tissue only"
+                },
+                correctAnswer: "D",
+                rationale: "The gross description is classic for a mature cystic teratoma (dermoid cyst). These tumors are composed of mature tissues derived from 2-3 germ layers (ectoderm, mesoderm, and endoderm), resulting in elements like skin, hair, cartilage, and GI tract tissue.",
+                source: "Pathology of the Uterus and Ovaries, slide 70: 'Germ cell tumors of the ovary – mature cystic teratoma... Composed of tissues from 2-3 germ layers... Gross: cystic, contain skin, hair, tooth structures, calcification'"
+            },
+            {
+                section: "Pathology of the Uterus and Ovaries",
+                fullLO: "LO8: List germ cell tumors which occur in the ovary; Recognize a mature teratoma of the ovary at the gross and microscopic level",
+                question: "A mature cystic teratoma of the ovary is generally benign. However, in less than 1% of cases, a secondary somatic malignancy can develop from one of the mature tissue components within the cyst. When this rare transformation occurs, which of the following types of carcinoma is most commonly identified?",
+                options: {
+                    A: "Adenocarcinoma of the colon",
+                    B: "Choriocarcinoma",
+                    C: "Clear cell carcinoma",
+                    D: "Squamous cell carcinoma",
+                    E: "Transitional cell carcinoma"
+                },
+                correctAnswer: "D",
+                rationale: "Mature teratomas are benign unless a secondary somatic malignancy develops from the mature tissue (most often the squamous epithelium). This occurs in <1% of cases and is usually a squamous cell carcinoma (SCC).",
+                source: "Pathology of the Uterus and Ovaries, slide 70: 'Mature – exclusively mature tissue; Benign unless a secondary somatic malignancy develops, < 1% (usually carcinoma such as SCC or PTC).'"
+            },
+            {
+                section: "Pathology of the Uterus and Ovaries",
+                fullLO: "LO9: List sex cord-stromal tumors",
+                question: "A 35-year-old woman is found to have a unilateral solid ovarian mass. The pathologist categorizes this neoplasm as a sex cord-stromal tumor, a group that accounts for approximately 15% of all ovarian tumors. Which of the following specific diagnoses belongs to this classification?",
+                options: {
+                    A: "Brenner tumor",
+                    B: "Dysgerminoma",
+                    C: "Granulosa cell tumor",
+                    D: "Immature teratoma",
+                    E: "Serous cystadenoma"
+                },
+                correctAnswer: "C",
+                rationale: "Ovarian tumors are classified into epithelial (70%), sex cord-stromal (~15%), germ cell (10%), and metastatic (~5%). The sex cord-stromal category includes Fibrothecomas, Granulosa cell tumors, and Sertoli-Leydig cell tumors.",
+                source: "Pathology of the Uterus and Ovaries, slide 41: 'Ovarian tumors: Classification... 2. Sex cord stromal ~ 15% | Fibrothecomas, Granulosa cell tumor, Sertoli -Leydig cell tumors'"
+            },
+            {
+                section: "Pathology of the Uterus and Ovaries",
+                fullLO: "LO9: List sex cord-stromal tumors",
+                question: "A 25-year-old woman presents with deepening of her voice and facial hair growth (masculinization). A solid, unilateral ovarian mass is excised. Histology shows varying proportions of cells, one type of which secretes androgens. This patient's neoplasm is classified into which of the following overarching categories of ovarian tumors?",
+                options: {
+                    A: "Epithelial surface carcinoma",
+                    B: "Germ cell tumor",
+                    C: "Metastatic tumor",
+                    D: "Sex cord-stromal tumor",
+                    E: "Surface epithelial borderline tumor"
+                },
+                correctAnswer: "D",
+                rationale: "The patient has a Sertoli-Leydig cell tumor, which secretes androgens and causes masculinization. Sertoli-Leydig cell tumors are classified as sex cord-stromal ovarian tumors.",
+                source: "Pathology of the Uterus and Ovaries, slides 41 & 80: 'Sex cord stromal tumors: Sertoli-Leydig cell tumor... Leydig cell component secretes androgens-> masculinization' and 'Ovarian tumors: Classification... 2. Sex cord stromal ~ 15%'"
+            },
+            {
+                section: "Pathology of the Uterus and Ovaries",
+                fullLO: "LO10: Compare and contrast adult granulosa cell tumors and fibrothecomas in terms of: clinical presentation, cell of origin, and morphology",
+                question: "A 58-year-old postmenopausal woman presents with vaginal bleeding. An endometrial biopsy confirms endometrial hyperplasia. A subsequent pelvic ultrasound reveals a solid, partially cystic unilateral ovarian mass. Resection of the mass reveals a pale architecture with microfollicular \"Call-Exner bodies\" filled with pink secretions, and cells featuring grooved nuclei. Which of the following is the most likely diagnosis?",
+                options: {
+                    A: "Adult granulosa cell tumor",
+                    B: "Brenner tumor",
+                    C: "Fibroma",
+                    D: "Juvenile granulosa cell tumor",
+                    E: "Thecoma"
+                },
+                correctAnswer: "A",
+                rationale: "This describes an Adult Granulosa cell tumor, which secretes estrogen (causing endometrial hyperplasia/bleeding). It is characterized morphologically by grooved nuclei and \"Call-Exner bodies\".",
+                source: "Pathology of the Uterus and Ovaries, slide 78: 'Sex cord stromal tumors: Granulosa cell tumors Adult Granulosa cell tumor... Secrete estrogen-> menorrhagia, post-menopausal bleeding (cause endometrial hyperplasia)... Cells: Scant pale architecture with grooved nuclei... microfolicular (with “Call-Exner bodies” filled with pink secretions)'"
+            },
+            {
+                section: "Pathology of the Uterus and Ovaries",
+                fullLO: "LO10: Compare and contrast adult granulosa cell tumors and fibrothecomas in terms of: clinical presentation, cell of origin, and morphology",
+                question: "A 62-year-old postmenopausal woman undergoes surgical removal of a solid, yellow, unilateral ovarian mass after presenting with abnormal uterine bleeding. Histologically, the tumor is benign and composed of sheets of uniform, cytologically bland cells with pale greyish-pink cytoplasm that are full of lipid. This tumor belongs to the same sex cord-stromal category as the adult granulosa cell tumor, but is morphologically distinct. Which of the following is the most likely diagnosis?",
+                options: {
+                    A: "Brenner tumor",
+                    B: "Dysgerminoma",
+                    C: "Fibroma",
+                    D: "Sertoli-Leydig cell tumor",
+                    E: "Thecoma"
+                },
+                correctAnswer: "E",
+                rationale: "Thecomas (or fibrothecomas) are benign sex cord-stromal tumors. They are distinguished from granulosa cell tumors by their morphology: they consist of sheets of uniform cells with pale greyish-pink cytoplasm full of lipid (which makes the tumor appear solid and yellow grossly). Like granulosa cell tumors, they often produce estrogen.",
+                source: "Pathology of the Uterus and Ovaries, slide 82: 'Sex cord stromal tumors: Thecoma • Benign stromal tumors composed of sheets of uniform cells with pale greyish-pink cytoplasm. • Cytologically bland. • Usually unilateral, post-menopausal women. • Often Estrogen producing • Grossly solid and yellow (as full of lipid/fat)'"
+            },
+
+            // --- Section 3: Abnormal Uterine Bleeding ---
+            {
+                section: "Abnormal Uterine Bleeding",
+                fullLO: "LO1: Utilize appropriate/current nomenclature to characterize abnormal uterine bleeding.",
+                question: "A 28-year-old woman presents to the gynecology clinic concerned about her menstrual cycle. She reports that her periods occur very frequently, completely ending and then starting again every 18 days. The bleeding itself lasts for 4 days and is of normal volume. According to standard AUB nomenclature, which of the following terms best describes her bleeding pattern?",
+                options: {
+                    A: "Amenorrhea",
+                    B: "Menometrorrhagia",
+                    C: "Menorrhagia",
+                    D: "Oligomenorrhea",
+                    E: "Polymenorrhea"
+                },
+                correctAnswer: "E",
+                rationale: "Polymenorrhea is defined as a menstrual cycle length of less than 21 days (frequent cycles).",
+                source: "Abnormal Uterine Bleeding, slide 5: 'Classification of Abnormal Uterine Bleeding (cont.)... Polymenorrhea- cycle <21 days'"
+            },
+            {
+                section: "Abnormal Uterine Bleeding",
+                fullLO: "LO1: Utilize appropriate/current nomenclature to characterize abnormal uterine bleeding.",
+                question: "A 35-year-old woman presents to her provider for a routine exam. The physician utilizes the FIGO \"PALM-COEIN\" classification system to categorize causes of abnormal uterine bleeding in nonpregnant women of reproductive age. In this system, the \"PALM\" acronym specifically describes which of the following categories of etiologies?",
+                options: {
+                    A: "Coagulation disorders",
+                    B: "Endocrine dysfunctions",
+                    C: "Iatrogenic causes",
+                    D: "Ovulatory dysfunctions",
+                    E: "Structural causes"
+                },
+                correctAnswer: "E",
+                rationale: "The PALM-COEIN classification system divides causes of AUB into structural (PALM: Polyps, Adenomyosis, Leiomyoma, Malignancy/hyperplasia) and non-structural (COEIN: Coagulopathy, Ovulatory dysfunction, Endometrial, Iatrogenic, Not yet classified) causes.",
+                source: "Abnormal Uterine Bleeding, slide 8: 'Universal Nomenclature AUB (PALM-COEIN) FIGO classification system that describes structural vs. non-structural causes of abnormal bleeding'"
+            },
+            {
+                section: "Abnormal Uterine Bleeding",
+                fullLO: "LO2: Understand the basic differential diagnosis for abnormal uterine bleeding in various reproductive age groups",
+                question: "A 12-year-old girl is brought to her pediatrician because her menstrual periods, which started three months ago, are extremely heavy, lasting 10-12 days and causing fatigue. She also has several large bruises on her legs and arms. Her paternal aunt also has a history of very heavy periods. Based on her age group and presentation, which of the following is the most likely underlying etiology?",
+                options: {
+                    A: "Cervical cancer",
+                    B: "Coagulation disorder",
+                    C: "Endometrial hyperplasia",
+                    D: "Endometrial polyp",
+                    E: "Ovarian malignancy"
+                },
+                correctAnswer: "B",
+                rationale: "In adolescents, heavy menses at menarche combined with a family history and signs of systemic bleeding (bruising) strongly point to a coagulation disorder (such as von Willebrand's disease). Approximately 50% of adolescents present with menorrhagia at menarche due to anovulation or bleeding disorders.",
+                source: "Abnormal Uterine Bleeding, slides 21 & 46: 'Adolescent DDx (cont.) ... Coagulation Disorders ex. Von Willebrand’s disease... ** 50% of adolescents present with menorrhagia at menarche!' and 'Question #1 Discussion... Heavy menses at menarche may be suggestive of anovulation, however given her family history and bruising, we are concerned about a bleeding disorder, such as VonWillebrand Disease.'"
+            },
+            {
+                section: "Abnormal Uterine Bleeding",
+                fullLO: "LO2: Understand the basic differential diagnosis for abnormal uterine bleeding in various reproductive age groups",
+                question: "A 65-year-old woman, who went through menopause at age 51, presents to the clinic reporting three days of vaginal bleeding. She is obese and has not engaged in sexual activity for 5 years. Given her postmenopausal status, the physician must thoroughly evaluate her to rule out which of the following high-risk etiologies?",
+                options: {
+                    A: "Coagulation disorder",
+                    B: "Endometrial cancer",
+                    C: "Endometriosis",
+                    D: "Foreign body",
+                    E: "Pregnancy"
+                },
+                correctAnswer: "B",
+                rationale: "In a postmenopausal woman (>12 months with no menses, >51yo), any new vaginal bleeding is highly concerning for endometrial hyperplasia or cancer, especially in the context of unopposed estrogen from obesity.",
+                source: "Abnormal Uterine Bleeding, slide 39: 'Postmenopausal DDx... Atrophy... Polyps... Endometrial Hyperplasia or Cancer... Hormonal Effect... Cervical Cancer'"
+            },
+            {
+                section: "Abnormal Uterine Bleeding",
+                fullLO: "LO3: Initiate an appropriate work-up for AUB based on your differential diagnosis",
+                question: "A 20-year-old woman complains of irregular, increasingly heavy menses occurring every 2-4 months since menarche. She is not sexually active, her pelvic exam is normal, and a urine pregnancy test is negative. To rule out common endocrine causes for her irregular anovulatory cycles, which of the following is the most appropriate initial laboratory work-up?",
+                options: {
+                    A: "Coagulation studies (PT/PTT)",
+                    B: "Endometrial biopsy",
+                    C: "Estrogen and Progesterone levels",
+                    D: "Pelvic ultrasound",
+                    E: "Thyroid stimulating hormone (TSH) and prolactin levels"
+                },
+                correctAnswer: "E",
+                rationale: "For an adolescent/young adult with irregular, heavy menses (oligomenorrhea pointing to anovulation), after ruling out pregnancy, the initial workup should evaluate the HPO-axis and thyroid. TSH and prolactin are indicated because thyroid disorders and hyperprolactinemia are common causes of anovulation.",
+                source: "Abnormal Uterine Bleeding, slides 23 & 50: 'Adolescent Initial Work-up... TSH (irregular and/or heavy), Prolactin (oligomenorrhea)' and 'Question #3 Discussion TSH and Prolactin levels indicated because hyperprolactinemia is associated with oligomenorrhea/amenorrhea and irregular frequency'"
+            },
+            {
+                section: "Abnormal Uterine Bleeding",
+                fullLO: "LO3: Initiate an appropriate work-up for AUB based on your differential diagnosis",
+                question: "A 62-year-old obese woman complains of two recent episodes of vaginal bleeding. She has been menopausal since age 55 and does not use hormone replacement therapy. Her Pap smear from 6 months ago was normal. A urine pregnancy test is negative. Which of the following is the most appropriate next step in her evaluation to definitively assess the etiology of her bleeding?",
+                options: {
+                    A: "Coagulation studies",
+                    B: "Endometrial biopsy",
+                    C: "Measurement of follicle stimulating hormone (FSH)",
+                    D: "Repeat Pap smear",
+                    E: "Screening for sexually transmitted infections"
+                },
+                correctAnswer: "B",
+                rationale: "Any episode of postmenopausal bleeding requires prompt evaluation to rule out endometrial cancer or hyperplasia. Endometrial sampling (via Endometrial Biopsy - EMB, or D&C) or imaging (like transvaginal ultrasound) is mandatory.",
+                source: "Abnormal Uterine Bleeding, slides 43 & 48: 'Postmenopausal Initial Work-up (cont.)... Postmenopausal bleeding needs imaging and/or sampling!!!! Endometrial sampling - EMB or D&C' and 'Question #2 Discussion Postmenopausal bleeding so needs endometrial sampling- EMB or D&C!!'"
+            },
+
+            // --- Section 4: Pelvic Pain ---
+            {
+                section: "Pelvic Pain",
+                fullLO: "LO1: Know the basic differential diagnosis for pelvic pain",
+                question: "A 26-year-old sexually active woman presents to the clinic with a two-day history of moderate lower abdominal and pelvic pain, accompanied by a fever of 102.4°F. Physical examination reveals a purulent vaginal discharge, and bimanual examination elicits exquisite cervical motion tenderness (chandelier sign). Her white blood cell count is elevated, and a pregnancy test is negative. Which of the following is the most likely diagnosis?",
+                options: {
+                    A: "Ectopic pregnancy",
+                    B: "Endometriosis",
+                    C: "Ovarian torsion",
+                    D: "Pelvic inflammatory disease (PID)",
+                    E: "Ruptured appendicitis"
+                },
+                correctAnswer: "D",
+                rationale: "The presentation of acute lower abdominal/pelvic pain, fever, purulent discharge, elevated WBC, and a positive chandelier sign (cervical motion tenderness) in a sexually active woman with a negative pregnancy test strongly points to Pelvic Inflammatory Disease (PID).",
+                source: "Pelvic Pain, slide 34: 'Answer: PID... Fever, elevated WBC count, purulent discharge and +CMT (chandelier sign) are hallmarks of this diagnosis. Ectopic and Septic AB unlikely with (-) UPT'"
+            },
+            {
+                section: "Pelvic Pain",
+                fullLO: "LO1: Know the basic differential diagnosis for pelvic pain",
+                question: "A 24-year-old woman complains of a sharp, localized lower abdominal pain that occurs exclusively on the right side. The pain predictably occurs halfway through her menstrual cycle and typically resolves within a day. She has no fever or abnormal discharge. Which of the following is the most likely gynecologic etiology of her pain?",
+                options: {
+                    A: "Adenomyosis",
+                    B: "Degenerating fibroid",
+                    C: "Endometritis",
+                    D: "Mittelschmerz",
+                    E: "Pelvic floor myofascial syndrome"
+                },
+                correctAnswer: "D",
+                rationale: "Mittelschmerz refers to lower abdominal pain felt on one side during ovulation (mid-cycle). It is a classic gynecologic etiology for cyclic, self-resolving pelvic pain.",
+                source: "Pelvic Pain, slide 22: 'Mittelschmerz • Lower abdominal pain felt on one side during ovulation (mid-cycle)'"
+            },
+            {
+                section: "Pelvic Pain",
+                fullLO: "LO2: Comprehend the pathophysiology of pelvic pain, including visceral, somatic, and neurogenic pain",
+                question: "A patient presents to the emergency department with abdominal pain. When describing the pain, she notes that it is deep, dull, vague, and poorly defined, localized mostly around her umbilicus. Based on the pathophysiology of pain, this specific description is characteristic of pain originating from which of the following sources?",
+                options: {
+                    A: "Injured sensory nerves",
+                    B: "Internal organs (Visceral)",
+                    C: "Myofascial trigger points (Somatic)",
+                    D: "Parietal peritoneum (Somatic)",
+                    E: "Subcutaneous tissue (Somatic)"
+                },
+                correctAnswer: "B",
+                rationale: "Visceral pain (from internal organs) is classically described as deep, dull, vague, and poorly defined (often periumbilical), such as the early pain of appendicitis. Somatic pain (from muscles, fascia, parietal peritoneum) is more localized, and neurogenic pain originates from nerve injury.",
+                source: "Pelvic Pain, slide 4: 'Pathophysiology • Visceral (internal organs) – True- deep, dull, vague, poorly defined, often periumbilical'"
+            },
+            {
+                section: "Pelvic Pain",
+                fullLO: "LO2: Comprehend the pathophysiology of pelvic pain, including visceral, somatic, and neurogenic pain",
+                question: "A 30-year-old woman developed pelvic pain following a lower abdominal surgery. She localizes the pain precisely to the incision site. The pain worsens significantly whenever she stretches or contracts her abdominal wall muscles. This type of pain, originating from the muscles, fascia, or parietal peritoneum, is classified physiologically as:",
+                options: {
+                    A: "Neurogenic pain",
+                    B: "Psychogenic pain",
+                    C: "Referred visceral pain",
+                    D: "Somatic pain",
+                    E: "True visceral pain"
+                },
+                correctAnswer: "D",
+                rationale: "Somatic pain originates in the abdominal and pelvic muscles, fascia, parietal peritoneum, or subcutaneous tissue. It is well-localized, associated with inflammation or trauma (like an incision or muscle strain), and worsens with movement or tension.",
+                source: "Pelvic Pain, slide 4: 'Pathophysiology... Somatic – pain in abdominal and pelvic muscles, fascia, parietal peritoneum, subq tissue – [eg. Myofascial trigger points, hernia, hematoma, muscle strain/injury... worsens with movement/tension]'"
+            },
+            {
+                section: "Pelvic Pain",
+                fullLO: "LO3: Perform appropriate evaluation for pelvic pain with physical exam, labs, imaging as appropriate",
+                question: "A 24-year-old woman presents to her physician complaining of a deep, aching pain in her lower abdomen. She states she has had increasingly severe menstrual cramps since menarche. Prior to obtaining any advanced imaging or considering invasive diagnostic procedures like laparoscopy, which of the following is the most critical initial laboratory test to order in this patient?",
+                options: {
+                    A: "Blood cultures",
+                    B: "CA-125 level",
+                    C: "Rheumatoid factor",
+                    D: "Thyroid stimulating hormone",
+                    E: "Urine pregnancy test"
+                },
+                correctAnswer: "E",
+                rationale: "In any fertile female presenting with abnormal uterine bleeding or pelvic pain, the absolute first step in laboratory evaluation is a pregnancy test (UPT or hCG) to rule out pregnancy (and thus life-threatening ectopic pregnancy).",
+                source: "Pelvic Pain, slide 32: 'Answer: Pregnancy Test Any fertile female with AUB or pelvic pain needs a UPT to rule out pregnancy!'"
+            },
+            {
+                section: "Pelvic Pain",
+                fullLO: "LO3: Perform appropriate evaluation for pelvic pain with physical exam, labs, imaging as appropriate",
+                question: "A 28-year-old woman presents with acute, severe, unilateral pelvic pain. The physician suspects she may have an ovarian cyst or potentially ovarian torsion. To best visualize the uterus, tubes, and ovaries without exposing the patient to ionizing radiation, which of the following is the most appropriate initial imaging modality?",
+                options: {
+                    A: "Computed tomography (CT) of the abdomen and pelvis",
+                    B: "Diagnostic laparoscopy",
+                    C: "Magnetic resonance imaging (MRI) of the pelvis",
+                    D: "Plain radiography (X-ray) of the abdomen",
+                    E: "Pelvic ultrasound"
+                },
+                correctAnswer: "E",
+                rationale: "Ultrasound is the initial imaging modality of choice for evaluating the female pelvis. It is low cost, readily available, does not expose the patient to radiation, and is the best modality for visualizing the uterus, tubes, and ovaries (such as diagnosing cysts or torsion).",
+                source: "Pelvic Pain, slide 10: 'IMAGING • Ultrasound- initial modality, low cost, best for visualizing uterus/tubes/ovaries, no radiation exposure, readily available, easy to use'"
+            }
+        ];
+
+        // --- Core Logic ---
+        const quizRoot = document.getElementById('quiz-root');
+        const themeSelect = document.getElementById('theme-select');
+        const pinBtn = document.getElementById('pin-btn');
+        const mainHeader = document.getElementById('main-header');
+        const sectionNav = document.getElementById('section-nav');
+        const customBuilder = document.getElementById('custom-builder');
+        const rootElements = document.documentElement;
+
+        let isRevealed = false;
+
+        function toggleAllLOs() {
+            isRevealed = !isRevealed;
+            const btn = document.getElementById('reveal-all-btn');
+            btn.textContent = isRevealed ? "Hide Learning Objectives" : "Show Learning Objectives";
+            
+            document.querySelectorAll('.lo-box').forEach(box => {
+                box.style.display = isRevealed ? 'block' : 'none';
+            });
+        }
+
+        function initQuiz() {
+            let currentSection = "";
+            let sectionIndex = 0;
+            
+            quizData.forEach((item, index) => {
+                if (item.section !== currentSection) {
+                    currentSection = item.section;
+                    
+                    const sectionId = 'sec-' + sectionIndex;
+                    
+                    const sectionHeader = document.createElement('h2');
+                    sectionHeader.className = 'section-header';
+                    sectionHeader.id = sectionId;
+                    sectionHeader.textContent = currentSection;
+                    quizRoot.appendChild(sectionHeader);
+
+                    const navBtn = document.createElement('button');
+                    let btnText = currentSection;
+                    if (btnText.includes("Complications of Pregnancy")) btnText = "Pregnancy Complications";
+                    if (btnText.includes("Pathology of the Uterus and Ovaries")) btnText = "Uterus & Ovaries Pathology";
+                    if (btnText.includes("Abnormal Uterine Bleeding")) btnText = "Abnormal Uterine Bleeding";
+                    if (btnText.includes("Pelvic Pain")) btnText = "Pelvic Pain";
+                    
+                    navBtn.textContent = btnText;
+                    navBtn.onclick = () => {
+                        document.getElementById(sectionId).scrollIntoView({ behavior: 'smooth' });
+                    };
+                    sectionNav.appendChild(navBtn);
+
+                    sectionIndex++;
+                }
+
+                const card = document.createElement('div');
+                card.className = 'question-card';
+                card.id = `q-card-${index}`;
+
+                const loBox = document.createElement('div');
+                loBox.className = 'lo-box';
+                loBox.id = `lo-${index}`;
+                loBox.innerHTML = item.fullLO;
+                card.appendChild(loBox);
+
+                const qText = document.createElement('div');
+                qText.className = 'question-text';
+                qText.innerHTML = `${index + 1}. ${item.question}`;
+                card.appendChild(qText);
+
+                const optionsGrid = document.createElement('div');
+                optionsGrid.className = 'options-grid';
+
+                for (const[key, value] of Object.entries(item.options)) {
+                    const label = document.createElement('label');
+                    label.className = 'option-label';
+                    
+                    const input = document.createElement('input');
+                    input.type = 'radio';
+                    input.name = `question-${index}`;
+                    input.value = key;
+
+                    const span = document.createElement('span');
+                    span.innerHTML = `${key}. ${value}`;
+
+                    label.appendChild(input);
+                    label.appendChild(span);
+                    optionsGrid.appendChild(label);
+                }
+                card.appendChild(optionsGrid);
+
+                const btn = document.createElement('button');
+                btn.className = 'btn-check';
+                btn.textContent = 'Check Answer';
+                btn.onclick = () => checkAnswer(index);
+                card.appendChild(btn);
+
+                const feedback = document.createElement('div');
+                feedback.className = 'feedback';
+                feedback.id = `feedback-${index}`;
+                card.appendChild(feedback);
+
+                quizRoot.appendChild(card);
+            });
+
+            const returnContainer = document.createElement('div');
+            returnContainer.style.textAlign = 'center';
+            returnContainer.style.marginTop = '2rem';
+            
+            const returnBtn = document.createElement('a');
+            returnBtn.href = 'https://ibecerramcg.github.io/GI-GU-ENDO-Practice-Quizzes/';
+            returnBtn.className = 'btn-link';
+            returnBtn.textContent = '← Return to Quiz Directory';
+            
+            returnContainer.appendChild(returnBtn);
+            quizRoot.appendChild(returnContainer);
+
+            const savedTheme = localStorage.getItem('quizTheme') || 'dark';
+            themeSelect.value = savedTheme;
+            changeTheme(savedTheme);
+
+            const savedPinState = localStorage.getItem('headerPinned');
+            toggleHeader(savedPinState !== 'false');
+        }
+
+        function checkAnswer(index) {
+            const selected = document.querySelector(`input[name="question-${index}"]:checked`);
+            const feedbackEl = document.getElementById(`feedback-${index}`);
+            const data = quizData[index];
+
+            if (!selected) {
+                alert("Please select an answer.");
+                return;
+            }
+
+            const isCorrect = selected.value === data.correctAnswer;
+            
+            let html = `<span class="feedback-header">${isCorrect ? "Correct!" : "Incorrect"}</span>`;
+            if (!isCorrect) {
+                html += `<div>The correct answer is <strong>${data.correctAnswer}</strong>.</div>`;
+            }
+            
+            html += `<div class="rationale"><strong>Rationale:</strong> ${data.rationale}</div>`;
+            html += `<div class="source"><strong>Source:</strong> ${data.source}</div>`;
+
+            feedbackEl.innerHTML = html;
+            feedbackEl.className = `feedback ${isCorrect ? 'correct' : 'incorrect'}`;
+            feedbackEl.style.display = 'block';
+        }
+
+        function changeTheme(themeName) {
+            localStorage.setItem('quizTheme', themeName);
+            
+            if (themeName === 'custom') {
+                rootElements.removeAttribute('data-theme');
+                customBuilder.classList.add('active');
+                loadCustomTheme();
+            } else {
+                rootElements.setAttribute('data-theme', themeName);
+                customBuilder.classList.remove('active');
+                rootElements.removeAttribute('style');
+            }
+        }
+
+        function updateCustomTheme() {
+            const bg = document.getElementById('color-bg').value;
+            const card = document.getElementById('color-card').value;
+            const text = document.getElementById('color-text').value;
+            const accent = document.getElementById('color-accent').value;
+
+            rootElements.style.setProperty('--bg-body', bg);
+            rootElements.style.setProperty('--bg-header', bg);
+            rootElements.style.setProperty('--bg-card', card);
+            rootElements.style.setProperty('--highlight-bg', card);
+            rootElements.style.setProperty('--text-main', text);
+            rootElements.style.setProperty('--text-accent', accent);
+            rootElements.style.setProperty('--button-bg', accent);
+            rootElements.style.setProperty('--button-text', bg);
+            rootElements.style.setProperty('--border-color', accent + '40');
+
+            const customColors = { bg, card, text, accent };
+            localStorage.setItem('customThemeColors', JSON.stringify(customColors));
+        }
+
+        function loadCustomTheme() {
+            const savedColors = JSON.parse(localStorage.getItem('customThemeColors'));
+            if (savedColors) {
+                document.getElementById('color-bg').value = savedColors.bg;
+                document.getElementById('color-card').value = savedColors.card;
+                document.getElementById('color-text').value = savedColors.text;
+                document.getElementById('color-accent').value = savedColors.accent;
+                updateCustomTheme();
+            } else {
+                updateCustomTheme();
+            }
+        }
+
+        function toggleHeader(forceState) {
+            const isCurrentlyPinned = !mainHeader.classList.contains('unpinned');
+            const newState = (typeof forceState === 'boolean') ? forceState : !isCurrentlyPinned;
+
+            if (newState) {
+                mainHeader.classList.remove('unpinned');
+                pinBtn.classList.add('pin-active');
+                localStorage.setItem('headerPinned', 'true');
+            } else {
+                mainHeader.classList.add('unpinned');
+                pinBtn.classList.remove('pin-active');
+                localStorage.setItem('headerPinned', 'false');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', initQuiz);
+
+    </script>
+</body>
+</html>
